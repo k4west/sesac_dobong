@@ -11,8 +11,6 @@ with st.form("form"):
     size = st.selectbox("size", ["1024x1024", "512x512", "256x256"])
     submit = st.form_submit_button()
 
-# user_input = st.text_input("그리고 싶은 그림은?")
-
 if submit and user_input:
     gpt_prompt = [
         {
