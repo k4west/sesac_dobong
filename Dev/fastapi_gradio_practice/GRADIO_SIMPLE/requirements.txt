@@ -1,0 +1,4 @@
+requests
+gradio==4.19
+transformers
+torch

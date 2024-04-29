@@ -1,0 +1,6 @@
+fastapi==0.97
+uvicorn
+gradio==4.19
+requests
+transformers
+torch

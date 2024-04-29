@@ -1,0 +1,33 @@
+langchain은 다양한 memory들을 제공한다.
+
+ConversationBufferMemory는 가장 간단한 메모리인데, 기존에 있던 모든 대화를 {history}에 넣어서 프롬프트로 활용하는 식이다. 
+그냥 로컬 메모리에 저장하는 방식이기 때문에, 이 대화를 만약 15분 길게는 30분씩 이어간다고 한다면, 
+ChatGPT의 토큰수가 초과되는 순간 대화를 더이상 이어갈 수 없게된다.
+
+이를 해결하기 위해 다른 메모리들이 존재한다. 
+첫번째로 ConversationBufferWindowMemory는 변수명에서 나타나는 것처럼 window를 활용해서, 
+k를 파라미터로하는 가장 최근의 몇개 대화만 {history}에 넣어서 프롬프트로 활용한다. 
+한시간 정도 대화를 한다면 처음 10분정도의 대화는 뒤에 10분의 대화의 맥락에 큰 영향을 미치지 않는다고 판단할 때 사용하면 좋다.
+
+다음은 ConversationEntityMemory. 
+변수명에서 유추할 수 있듯 기존의 대화 기록에서 특정 주제에 대해 정보를 기억하는 것이다. 
+load_memory_variables()이라는 method를 활용해서 대화를 나누는 중 대화 이력에서 해당 정보를 가져와야 할 때 
+memory에서 LLM을 활용하여 해당 정보를 가져오는 방식이다. 
+ConversationEntityMemory는 대화에서 주요 내용을 추출하기 때문에 OpenAI API를 두번 호출하게 된다. 
+따라서 좀 느리다
+
+다음은 ConversationSummary. 
+변수명에서 보이는 것처럼 대화를 요약해서 {history}에 넣어주는 방식이다. 
+요약할 때 OpenAI API를 추가로 호출해야 하기 때문에 이 역시 느리다. 
+하지만 대화 내용이 너무 길어서 토큰을 초과할 것 같다면 
+ConversaionSummary를 사용하는 것이 속도는 좀 느리겠지만 정확한 대화를 이어나가는데 훨씬 유리하다.
+
+다음은 ConversationSummaryBuffer. 
+ConversationSummary와 ConversationBufferWindowMemory를 합쳐둔거라고 보면 된다. 
+토큰 수를 사용해서 가장 최근의 몇개 대화 내용을 요약해서 {history}에 넣어주는 방식이다. 
+ConversationSummary가 전체를 요약하는 것과 비교하면 속도는 훨씬 빠르다
+
+다음은 ConversationTokenBuffer. 
+ConversationSummaryBuffer와 유사하지만 요악을 하지 않고 토큰수를 기반으로 전체 내용을 다 넘긴다. 
+여기서는 왠지 tiktoken으로 연산이 한번 들어갈 것 같으니, 
+각각의 대화가 너무 길어지는게 아니라면 ConversationBufferWindowMemory가 더 유리할 것 같다.

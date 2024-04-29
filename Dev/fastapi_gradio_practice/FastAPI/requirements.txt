@@ -1,0 +1,5 @@
+fastapi==0.97
+uvicorn
+easyocr
+python-multipart
+pillow
